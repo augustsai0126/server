@@ -174,3 +174,12 @@ SELECT b FROM t1;
 DROP TABLE t1;
 
 SET GLOBAL ROCKSDB_PAUSE_BACKGROUND_WORK = @ORIG_PAUSE_BACKGROUND_WORK;
+
+#
+# MDEV-16768 Replication aborts with ER_KEY_NOT_FOUND on table with key on BLOB and without PK
+#
+create table t1 (b blob, i int, key(b(8))) engine=rocksdb;
+insert into t1 values (repeat('a',22),1);
+select * from t1 where b=repeat('a', 22);
+select * from t1 ignore index (b) where b=repeat('a', 22);
+drop table t1;

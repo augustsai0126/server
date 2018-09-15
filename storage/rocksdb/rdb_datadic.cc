@@ -1264,6 +1264,11 @@ void Rdb_key_def::pack_with_make_sort_key(
   field->sort_string(*dst, max_len);
   dbug_tmp_restore_column_map(field->table->read_set, old_map);
   *dst += max_len;
+  if (field->flags & BLOB_FLAG && field->charset() == &my_charset_bin)
+  {
+    const int l= static_cast<const Field_blob *>(field)->pack_length_no_ptr();
+    bzero(*dst - l, l);
+  }
 }
 
 /*
