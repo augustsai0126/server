@@ -2733,8 +2733,10 @@ files_checked:
 	if (!srv_read_only_mode) {
 		if (create_new_db) {
 			srv_buffer_pool_load_at_startup = FALSE;
+		} else {
+			srv_crypt_space_status = static_cast<srv_crypt_status_t>(
+					dict_hdr_get_crypt_status());
 		}
-
 #ifdef WITH_WSREP
 		/*
 		  Create the dump/load thread only when not running with
